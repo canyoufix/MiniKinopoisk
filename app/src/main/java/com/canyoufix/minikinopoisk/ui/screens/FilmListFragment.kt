@@ -1,13 +1,17 @@
 package com.canyoufix.minikinopoisk.ui.screens
 
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -33,6 +37,7 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
     private lateinit var genreTitle: TextView
     private lateinit var filmTitle: TextView
     private lateinit var genreRecyclerView: RecyclerView
+    val scrollView = view?.findViewById<NestedScrollView>(R.id.scrollView)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,6 +48,11 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
         setupAdapters()
         setupGenreToggle()
         observeViewModel()
+
+        // Скролл в последнюю позицию (для Android 8.0)
+        scrollView?.post {
+            scrollView.scrollTo(0, lastScrollY)
+        }
     }
 
     override fun onResume() {
@@ -51,6 +61,13 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
         (activity as? AppCompatActivity)?.supportActionBar?.apply {
             title = "Фильмы"
         }
+    }
+
+    private var lastScrollY = 0
+
+    override fun onPause() {
+        super.onPause()
+        lastScrollY = scrollView?.scrollY ?: 0
     }
 
     private fun initViews(view: View) {
@@ -127,8 +144,8 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
                             recyclerView.visibility = View.VISIBLE
 
 
-                            adapter.submitList(films) {
 
+                            adapter.submitList(films) {
                             }
                         }
                     }

@@ -62,4 +62,12 @@ class FilmAdapter(
                 oldItem == newItem
         }
     }
+
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).id.toLong()
+    }
 }
