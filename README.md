@@ -1,5 +1,7 @@
 ## Тестовое задание
 
+**[Скачать APK](https://github.com/canyoufix/MiniKinopoisk/releases/tag/v1.0.0/app-debug.apk)**
+
 **Технологический стек:**
 * Язык разработки: Kotlin  
 * Среда разработки: Android Studio  
