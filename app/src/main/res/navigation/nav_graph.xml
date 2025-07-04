@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/filmListFragment">
+
+    <fragment
+        android:id="@+id/filmListFragment"
+        android:name="com.canyoufix.minikinopoisk.ui.screens.FilmListFragment"
+        android:label="Фильмы"
+        tools:layout="@layout/fragment_film_list" >
+        <action
+            android:id="@+id/action_filmListFragment_to_filmDetailFragment"
+            app:destination="@id/filmDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/filmDetailFragment"
+        android:name="com.canyoufix.minikinopoisk.ui.screens.FilmDetailFragment"
+        android:label="Информация о фильме"
+        tools:layout="@layout/fragment_film_detail" >
+
+    </fragment>
+</navigation>

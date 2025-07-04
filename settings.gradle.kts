@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "MiniKinopoisk"
 include(":app")
+include(":api")
+include(":data")
