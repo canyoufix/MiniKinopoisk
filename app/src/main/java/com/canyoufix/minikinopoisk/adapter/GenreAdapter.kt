@@ -11,10 +11,9 @@ import com.canyoufix.minikinopoisk.R
 
 class GenreAdapter(
     private val genres: List<String>,
+    private val getSelectedGenre: () -> String?,
     private val onGenreSelected: (String?) -> Unit
 ) : RecyclerView.Adapter<GenreAdapter.GenreViewHolder>() {
-
-    private var selectedGenre: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -34,25 +33,19 @@ class GenreAdapter(
         fun bind(genre: String) {
             button.text = genre
 
-            // Меняем цвет выбранной кнопки
-            val isSelected = genre == selectedGenre
+            val isSelected = genre == getSelectedGenre()
             val context = button.context
+
             button.setBackgroundColor(
                 if (isSelected) ContextCompat.getColor(context, R.color.orange)
                 else ContextCompat.getColor(context, android.R.color.white)
             )
 
             button.setOnClickListener {
-                selectedGenre = if (selectedGenre == genre) {
-                    onGenreSelected(null) // сброс фильтра
-                    null
-                } else {
-                    onGenreSelected(genre)
-                    genre
-                }
-                notifyDataSetChanged()
+                // Сброс
+                val newSelection = if (isSelected) null else genre
+                onGenreSelected(newSelection)
             }
         }
     }
 }
-

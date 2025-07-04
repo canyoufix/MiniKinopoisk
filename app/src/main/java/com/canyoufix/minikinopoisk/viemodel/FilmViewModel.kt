@@ -22,6 +22,13 @@ class FilmViewModel(private val repository: FilmRepository) : ViewModel() {
     val error: StateFlow<String?> = _error
 
     private val _selectedGenre = MutableStateFlow<String?>(null)
+    val selectedGenre: StateFlow<String?> = _selectedGenre
+
+    private val _userSelectedGenre = MutableStateFlow(false)
+    val userSelectedGenre: StateFlow<Boolean> = _userSelectedGenre
+
+    private val _isGenreVisible = MutableStateFlow(false)
+    val isGenreVisible: StateFlow<Boolean> = _isGenreVisible
 
     // Отфильтрованные фильмы
     val filteredFilms = combine(_films, _selectedGenre) { films, genre ->
@@ -62,6 +69,15 @@ class FilmViewModel(private val repository: FilmRepository) : ViewModel() {
 
     fun setGenre(genre: String?) {
         _selectedGenre.value = genre
+        _userSelectedGenre.value = true
+    }
+
+    fun toggleGenreVisibility() {
+        _isGenreVisible.value = !_isGenreVisible.value
+    }
+
+    fun resetUserSelectedGenre() {
+        _userSelectedGenre.value = false
     }
 
     fun clearError() {

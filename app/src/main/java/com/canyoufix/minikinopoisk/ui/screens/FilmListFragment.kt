@@ -1,13 +1,11 @@
 package com.canyoufix.minikinopoisk.ui.screens
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Parcelable
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -27,7 +25,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
-
 class FilmListFragment : Fragment(R.layout.fragment_film_list) {
 
     private val filmViewModel: FilmViewModel by viewModel()
@@ -37,22 +34,23 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
     private lateinit var genreTitle: TextView
     private lateinit var filmTitle: TextView
     private lateinit var genreRecyclerView: RecyclerView
-    val scrollView = view?.findViewById<NestedScrollView>(R.id.scrollView)
+    private lateinit var scrollView: NestedScrollView
+
+    private var lastScrollY = 0
+    private var isGenreFilterApplied = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().title = "Фильмы"
+
+        // Инициализация Scroll
+        scrollView = view.findViewById(R.id.scrollView)
 
         // Инициализация View
         initViews(view)
         setupAdapters()
         setupGenreToggle()
         observeViewModel()
-
-        // Скролл в последнюю позицию (для Android 8.0)
-        scrollView?.post {
-            scrollView.scrollTo(0, lastScrollY)
-        }
     }
 
     override fun onResume() {
@@ -63,11 +61,9 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
         }
     }
 
-    private var lastScrollY = 0
-
     override fun onPause() {
         super.onPause()
-        lastScrollY = scrollView?.scrollY ?: 0
+        lastScrollY = scrollView.scrollY
     }
 
     private fun initViews(view: View) {
@@ -104,26 +100,34 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
             "Мюзикл", "Приключения", "Ужасы"
         )
 
-        val genreAdapter = GenreAdapter(genres) { selectedGenre ->
-            filmViewModel.setGenre(selectedGenre)
-        }
+        val genreAdapter = GenreAdapter(
+            genres = genres,
+            getSelectedGenre = { filmViewModel.selectedGenre.value },
+            onGenreSelected = { selectedGenre ->
+                isGenreFilterApplied = true
+                filmViewModel.setGenre(selectedGenre)
+            }
+        )
+        genreRecyclerView.adapter = genreAdapter
 
         genreRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        genreRecyclerView.adapter = genreAdapter
     }
 
     private fun setupGenreToggle() {
-        var isGenreVisible = false
-
-        genreTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_down, 0)
         genreTitle.setOnClickListener {
-            isGenreVisible = !isGenreVisible
-            genreRecyclerView.visibility = if (isGenreVisible) View.VISIBLE else View.GONE
-            val arrowIcon = if (isGenreVisible) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
-            genreTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, arrowIcon, 0)
+            filmViewModel.toggleGenreVisibility()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            filmViewModel.isGenreVisible.collect { isVisible ->
+                genreRecyclerView.visibility = if (isVisible) View.VISIBLE else View.GONE
+                val arrowIcon = if (isVisible) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                genreTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, arrowIcon, 0)
+            }
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -138,16 +142,28 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
                 launch {
                     filmViewModel.filteredFilms.collect { films ->
                         if (films.isNotEmpty()) {
-                            // VISIBLE заголовков
                             genreTitle.visibility = View.VISIBLE
                             filmTitle.visibility = View.VISIBLE
                             recyclerView.visibility = View.VISIBLE
 
-
-
                             adapter.submitList(films) {
+                                scrollView.post {
+                                    if (filmViewModel.userSelectedGenre.value) {
+                                        //scrollView.scrollTo(0, filmTitle.top)
+                                        filmViewModel.resetUserSelectedGenre()
+                                    } else {
+                                        scrollView.scrollTo(0, lastScrollY)
+                                    }
+                                }
                             }
                         }
+                    }
+                }
+
+                // Сохранение выбранного жанра и подсветки
+                launch {
+                    filmViewModel.selectedGenre.collect {
+                        genreRecyclerView.adapter?.notifyDataSetChanged()
                     }
                 }
 
@@ -160,6 +176,7 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
                         }
                     }
                 }
+
             }
         }
     }
