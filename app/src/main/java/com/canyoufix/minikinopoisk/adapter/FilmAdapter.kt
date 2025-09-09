@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.canyoufix.data.model.Film
 import com.canyoufix.minikinopoisk.R
 
@@ -39,16 +41,17 @@ class FilmAdapter(
         fun bind(film: Film) {
             title.text = film.localized_name
 
-            // Загрузка картинки через Glide
+            // Загрузка постера фильма
             try {
                 Glide.with(itemView)
                     .load(film.image_url)
-                    .placeholder(R.drawable.placeholder_image)
-                    .error(R.drawable.placeholder_image)
-                    .fallback(R.drawable.placeholder_image)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .fallback(R.drawable.placeholder)
+                    .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
                     .into(image)
             } catch (e: Exception) {
-                image.setImageResource(R.drawable.placeholder_image)
+                image.setImageResource(R.drawable.placeholder)
             }
         }
     }

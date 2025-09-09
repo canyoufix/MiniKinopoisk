@@ -41,7 +41,7 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().title = "Фильмы"
+        requireActivity().title = getString(R.string.films)
 
         // Инициализация Scroll
         scrollView = view.findViewById(R.id.scrollView)
@@ -57,7 +57,7 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
         super.onResume()
         // Обновляем заголовок при возврате на фрагмент
         (activity as? AppCompatActivity)?.supportActionBar?.apply {
-            title = "Фильмы"
+            title = getString(R.string.films)
         }
     }
 
@@ -94,11 +94,7 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
         recyclerView.adapter = adapter
 
         // Адаптер для жанров
-        val genres = listOf(
-            "Драма", "Фэнтези", "Криминал", "Детектив", "Мелодрама",
-            "Биография", "Комедия", "Фантастика", "Боевик", "Триллер",
-            "Мюзикл", "Приключения", "Ужасы"
-        )
+        val genres = resources.getStringArray(R.array.genres).toList()
 
         val genreAdapter = GenreAdapter(
             genres = genres,

@@ -10,12 +10,10 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="56dp"
         android:background="@color/blue"
-        app:titleTextColor="@color/white"
-        android:titleTextColor="@android:color/white"
         app:titleCentered="true"
-        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+        app:titleTextAppearance="@style/toolbar" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"

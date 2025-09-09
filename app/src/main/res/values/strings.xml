@@ -1,5 +1,23 @@
 <resources>
     <string name="app_name">MiniKinopoisk</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="films">Фильмы</string>
+    <string name="genres">Жанры</string>
+    <string name="kinopoisk">КиноПоиск</string>
+
+    <string-array name="genres">
+        <item>Драма</item>
+        <item>Фэнтези</item>
+        <item>Криминал</item>
+        <item>Детектив</item>
+        <item>Мелодрама</item>
+        <item>Биография</item>
+        <item>Комедия</item>
+        <item>Фантастика</item>
+        <item>Боевик</item>
+        <item>Триллер</item>
+        <item>Мюзикл</item>
+        <item>Приключения</item>
+        <item>Ужасы</item>
+    </string-array>
 </resources>

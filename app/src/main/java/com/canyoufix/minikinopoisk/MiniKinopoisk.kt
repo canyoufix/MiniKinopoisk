@@ -13,8 +13,8 @@ class MiniKinopoisk : Application() {
         startKoin {
             androidContext(this@MiniKinopoisk)
             modules(
-                AppModule,
-                ApiModule.module
+                AppModule, // App
+                ApiModule.module // Api module (Retrofit)
             )
         }
     }

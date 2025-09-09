@@ -1,8 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
     <style name="Base.Theme.MiniKinopoisk" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Белый цвет для стрелки "назад" -->
+        <item name="colorControlNormal">@android:color/white</item>
+
+        <!-- Цвет строки состояния -->
+        <item name="android:statusBarColor">@color/blue</item>
     </style>
 
     <style name="Theme.MiniKinopoisk" parent="Base.Theme.MiniKinopoisk" />

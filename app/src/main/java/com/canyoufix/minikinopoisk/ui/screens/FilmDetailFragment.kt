@@ -11,9 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.canyoufix.data.model.Film
 import com.canyoufix.minikinopoisk.R
 import com.google.android.material.appbar.MaterialToolbar
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 class FilmDetailFragment : Fragment(R.layout.fragment_film_detail) {
 
@@ -37,10 +42,13 @@ class FilmDetailFragment : Fragment(R.layout.fragment_film_detail) {
     private fun setupViews(view: View, film: Film) {
         // Постер
         val imageView = view.findViewById<ImageView>(R.id.posterImageView)
+
         Glide.with(view.context)
             .load(film.image_url)
-            .placeholder(R.drawable.placeholder_image)
-            .error(R.drawable.placeholder_image)
+            .placeholder(R.drawable.placeholder)
+            .error(R.drawable.placeholder)
+            .fallback(R.drawable.placeholder)
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
             .into(imageView)
 
         // Название
@@ -62,10 +70,12 @@ class FilmDetailFragment : Fragment(R.layout.fragment_film_detail) {
 
         // Рейтинг
         val ratingView = view.findViewById<TextView>(R.id.ratingTextView)
-        val ratingText = film.rating?.let { "%.1f".format(it) }
+        val ratingText = film.rating?.let {
+            DecimalFormat("#.#", DecimalFormatSymbols(Locale.US)).format(it)
+        }
 
         val kinopoiskView = view.findViewById<TextView>(R.id.kinopoiskTextView)
-        val kinopoiskText = "КиноПоиск"
+        val kinopoiskText = getString(R.string.kinopoisk)
 
         if (!ratingText.isNullOrBlank()) {
             ratingView.text = ratingText

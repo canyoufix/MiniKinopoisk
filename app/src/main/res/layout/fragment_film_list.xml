@@ -25,11 +25,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="Жанры"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="invisible" />
+                android:text="@string/genres"
+                android:visibility="invisible"
+                android:textAppearance="@style/title" />
 
             <!-- Список жанров -->
             <androidx.recyclerview.widget.RecyclerView
@@ -50,10 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Фильмы"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="invisible"/>
+                android:text="@string/films"
+                android:visibility="invisible"
+                android:textAppearance="@style/title" />
 
             <!-- Список фильмов -->
             <androidx.recyclerview.widget.RecyclerView
