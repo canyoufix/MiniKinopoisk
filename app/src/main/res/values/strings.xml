@@ -4,20 +4,22 @@
     <string name="films">Фильмы</string>
     <string name="genres">Жанры</string>
     <string name="kinopoisk">КиноПоиск</string>
+    <string name="repeat">ПОВТОРИТЬ</string>
+    <string name="error_network">Ошибка подключения сети</string>
 
     <string-array name="genres">
-        <item>Драма</item>
-        <item>Фэнтези</item>
-        <item>Криминал</item>
-        <item>Детектив</item>
-        <item>Мелодрама</item>
         <item>Биография</item>
-        <item>Комедия</item>
-        <item>Фантастика</item>
         <item>Боевик</item>
-        <item>Триллер</item>
+        <item>Детектив</item>
+        <item>Драма</item>
+        <item>Комедия</item>
+        <item>Криминал</item>
+        <item>Мелодрама</item>
         <item>Мюзикл</item>
         <item>Приключения</item>
+        <item>Триллер</item>
         <item>Ужасы</item>
+        <item>Фэнтези</item>
+        <item>Фантастика</item>
     </string-array>
 </resources>

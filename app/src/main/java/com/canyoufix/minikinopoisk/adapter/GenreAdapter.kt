@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.canyoufix.minikinopoisk.R
@@ -28,24 +29,19 @@ class GenreAdapter(
     override fun getItemCount(): Int = genres.size
 
     inner class GenreViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val button: Button = view.findViewById(R.id.genreButton)
+        private val button: TextView = view.findViewById(R.id.genreButton)
 
         fun bind(genre: String) {
             button.text = genre
 
             val isSelected = genre == getSelectedGenre()
-            val context = button.context
-
-            button.setBackgroundColor(
-                if (isSelected) ContextCompat.getColor(context, R.color.orange)
-                else ContextCompat.getColor(context, android.R.color.white)
-            )
+            button.isSelected = isSelected
 
             button.setOnClickListener {
-                // Сброс
                 val newSelection = if (isSelected) null else genre
                 onGenreSelected(newSelection)
             }
         }
     }
+
 }

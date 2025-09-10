@@ -1,10 +1,14 @@
 package com.canyoufix.minikinopoisk.ui.screens
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +53,6 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
         // Инициализация View
         initViews(view)
         setupAdapters()
-        setupGenreToggle()
         observeViewModel()
     }
 
@@ -109,20 +112,6 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
         genreRecyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun setupGenreToggle() {
-        genreTitle.setOnClickListener {
-            filmViewModel.toggleGenreVisibility()
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            filmViewModel.isGenreVisible.collect { isVisible ->
-                genreRecyclerView.visibility = if (isVisible) View.VISIBLE else View.GONE
-                val arrowIcon = if (isVisible) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
-                genreTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, arrowIcon, 0)
-            }
-        }
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -139,6 +128,7 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
                     filmViewModel.filteredFilms.collect { films ->
                         if (films.isNotEmpty()) {
                             genreTitle.visibility = View.VISIBLE
+                            genreRecyclerView.visibility = View.VISIBLE
                             filmTitle.visibility = View.VISIBLE
                             recyclerView.visibility = View.VISIBLE
 
@@ -165,10 +155,9 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
 
                 // Обработка ошибок
                 launch {
-                    filmViewModel.error.collect { error ->
-                        error?.let {
+                    filmViewModel.error.observe(viewLifecycleOwner) { isError ->
+                        if (isError == true) {
                             showErrorSnackbar()
-                            filmViewModel.clearError()
                         }
                     }
                 }
@@ -178,26 +167,26 @@ class FilmListFragment : Fragment(R.layout.fragment_film_list) {
     }
 
     private fun showErrorSnackbar() {
-        Snackbar.make(
-            requireView(),
-            "Ошибка подключения к сети",
-            Snackbar.LENGTH_INDEFINITE
-        ).apply {
-            view.apply {
-                (layoutParams as? ViewGroup.MarginLayoutParams)?.setMargins(5, 0, 5, 75)
-                minimumWidth = ViewGroup.LayoutParams.MATCH_PARENT
-            }
-            setActionTextColor(ContextCompat.getColor(requireContext(), R.color.orange))
-            setAction("Повторить") {
-                filmViewModel.loadFilms()
-            }
-            addCallback(object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    filmViewModel.clearError()
-                }
-            })
-            show()
+        val parent = requireView() as ViewGroup
+        val snackbar = Snackbar.make(parent, "", Snackbar.LENGTH_INDEFINITE)
+
+        snackbar.view.setBackgroundColor(Color.TRANSPARENT)
+        snackbar.view.setPadding(0, 0, 0, 0)
+
+        // Кастомный layout
+        val customView = layoutInflater.inflate(R.layout.custom_snackbar, parent, false)
+
+        // Обработчик кнопки
+        customView.findViewById<TextView>(R.id.snackbar_action).setOnClickListener {
+            filmViewModel.clearError()
+            filmViewModel.loadFilms()
+            snackbar.dismiss()
         }
+
+        // Добавляем кастомный layout в snackbar.view
+        (snackbar.view as ViewGroup).addView(customView)
+
+        snackbar.show()
     }
+
 }

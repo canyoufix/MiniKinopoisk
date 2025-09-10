@@ -1,5 +1,7 @@
 package com.canyoufix.minikinopoisk.viemodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.canyoufix.data.model.Film
@@ -18,17 +20,14 @@ class FilmViewModel(private val repository: FilmRepository) : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    private val _error = MutableLiveData<Boolean>()
+    val error: LiveData<Boolean> get() = _error
 
     private val _selectedGenre = MutableStateFlow<String?>(null)
     val selectedGenre: StateFlow<String?> = _selectedGenre
 
     private val _userSelectedGenre = MutableStateFlow(false)
     val userSelectedGenre: StateFlow<Boolean> = _userSelectedGenre
-
-    private val _isGenreVisible = MutableStateFlow(false)
-    val isGenreVisible: StateFlow<Boolean> = _isGenreVisible
 
     // Отфильтрованные фильмы
     val filteredFilms = combine(_films, _selectedGenre) { films, genre ->
@@ -54,12 +53,12 @@ class FilmViewModel(private val repository: FilmRepository) : ViewModel() {
     fun loadFilms() {
         viewModelScope.launch {
             _isLoading.value = true
-            _error.value = null
+            _error.value = false
             try {
                 val response = repository.getFilms()
                 _films.value = response
             } catch (e: Exception) {
-                _error.value = "Ошибка загрузки: ${e.message}"
+                _error.value = true
                 _films.value = emptyList()
             } finally {
                 _isLoading.value = false
@@ -72,15 +71,12 @@ class FilmViewModel(private val repository: FilmRepository) : ViewModel() {
         _userSelectedGenre.value = true
     }
 
-    fun toggleGenreVisibility() {
-        _isGenreVisible.value = !_isGenreVisible.value
-    }
 
     fun resetUserSelectedGenre() {
         _userSelectedGenre.value = false
     }
 
     fun clearError() {
-        _error.value = null
+        _error.value = false
     }
 }

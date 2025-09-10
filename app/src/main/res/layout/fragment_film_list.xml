@@ -12,11 +12,9 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:background="@color/white">
 
             <!-- Заголовок жанров -->
@@ -24,43 +22,54 @@
                 android:id="@+id/genreTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
                 android:layout_marginStart="8dp"
                 android:text="@string/genres"
                 android:visibility="invisible"
-                android:textAppearance="@style/title" />
+                android:textAppearance="@style/title"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <!-- Список жанров -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/genreRecyclerView"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
-                android:scrollbars="none"
                 android:visibility="invisible"
+                app:layout_constraintTop_toBottomOf="@id/genreTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 tools:listitem="@layout/item_genre" />
 
             <!-- Заголовок фильмов -->
             <TextView
                 android:id="@+id/filmTitle"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
                 android:text="@string/films"
                 android:visibility="invisible"
-                android:textAppearance="@style/title" />
+                android:textAppearance="@style/title"
+                app:layout_constraintTop_toBottomOf="@id/genreRecyclerView"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <!-- Список фильмов -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
                 android:visibility="invisible"
                 android:nestedScrollingEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/filmTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 tools:listitem="@layout/item_film" />
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
 
